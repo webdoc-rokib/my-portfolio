@@ -19,6 +19,18 @@ const Portfolio = () => {
   const toRotate = [ "Web Developer", "Cyber Security Enthusiast", "Tech Learner" ];
   const period = 2000;
 
+  // Set Title and Favicon
+  useEffect(() => {
+    document.title = "MD Rokibul Islam | Portfolio";
+    
+    // Set dynamic favicon
+    const link = document.querySelector("link[rel~='icon']") || document.createElement('link');
+    link.type = 'image/svg+xml';
+    link.rel = 'icon';
+    link.href = 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><text y=".9em" font-size="90">🛡️</text></svg>';
+    document.getElementsByTagName('head')[0].appendChild(link);
+  }, []);
+
   // Handle scroll effects & Section visibility
   useEffect(() => {
     const handleScroll = () => {
@@ -362,9 +374,13 @@ const Portfolio = () => {
                       <Globe size={20} />
                     </div>
                   </div>
-                  <button className="text-xs font-bold uppercase tracking-wider bg-gradient-to-r from-teal-500 to-blue-500 text-white px-4 py-2 rounded-lg shadow-lg shadow-teal-500/20 hover:shadow-teal-500/40 transition-all hover:-translate-y-0.5">
+                  <a 
+                    href="/src/assets/cv.pdf" 
+                    download="MD_Rokibul_Islam_CV.pdf"
+                    className="text-xs font-bold uppercase tracking-wider bg-gradient-to-r from-teal-500 to-blue-500 text-white px-4 py-2 rounded-lg shadow-lg shadow-teal-500/20 hover:shadow-teal-500/40 transition-all hover:-translate-y-0.5 flex items-center justify-center"
+                  >
                     Download CV
-                  </button>
+                  </a>
                 </div>
               </div>
             </div>
