@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import cvfile from "./src/assets/cv.pdf"
 import { 
   User, Code, BookOpen, Coffee, Globe, Shield, Terminal, Mail, 
   Linkedin, Github, Cpu, ChevronDown, Plane, Menu, X, ExternalLink, 
@@ -375,7 +376,8 @@ const Portfolio = () => {
                     </div>
                   </div>
                   <a 
-                    href="/src/assets/cv.pdf" 
+                    href="/src/assets/cv.pdf"
+                    source={cvfile} 
                     download="MD_Rokibul_Islam_CV.pdf"
                     className="text-xs font-bold uppercase tracking-wider bg-gradient-to-r from-teal-500 to-blue-500 text-white px-4 py-2 rounded-lg shadow-lg shadow-teal-500/20 hover:shadow-teal-500/40 transition-all hover:-translate-y-0.5 flex items-center justify-center"
                   >
