@@ -371,9 +371,9 @@ const Portfolio = () => {
                     <a href="https://www.linkedin.com/in/rokib09" target="_blank" rel="noopener noreferrer" className="p-2 bg-slate-800 rounded-lg hover:bg-slate-700 hover:text-blue-400 transition-colors">
                       <Linkedin size={20} />
                     </a>
-                    <div className="p-2 bg-slate-800 rounded-lg hover:bg-slate-700 hover:text-green-400 transition-colors cursor-pointer">
-                      <Globe size={20} />
-                    </div>
+                    <a href="https://www.facebook.com/rokibul09" target="_blank" rel="noopener noreferrer" className="p-2 bg-slate-800 rounded-lg hover:bg-slate-700 hover:text-blue-400 transition-colors">
+                      <Facebook size={20} />
+                    </a>
                   </div>
                   <a 
                     href={cvfile}
@@ -581,6 +581,10 @@ const Portfolio = () => {
               </a>
               <a href="https://github.com/webdoc-rokib/" target="_blank" rel="noopener noreferrer" className="flex items-center justify-center gap-3 px-8 py-4 bg-slate-900 rounded-xl hover:bg-slate-800 border border-slate-700 hover:border-purple-500 transition-all group hover:-translate-y-1 shadow-lg">
                 <Github className="text-purple-400 group-hover:scale-110 transition-transform" />
+                <span className="font-semibold text-lg">GitHub</span>
+              </a>
+              <a href="https://www.facebook.com/rokibul09" target="_blank" rel="noopener noreferrer" className="flex items-center justify-center gap-3 px-8 py-4 bg-slate-900 rounded-xl hover:bg-slate-800 border border-slate-700 hover:border-purple-500 transition-all group hover:-translate-y-1 shadow-lg">
+                <Facebook className="text-purple-400 group-hover:scale-110 transition-transform" />
                 <span className="font-semibold text-lg">GitHub</span>
               </a>
             </div>
