@@ -3,7 +3,7 @@ import cvfile from "./assets/cv.pdf"
 import { 
   User, Code, BookOpen, Coffee, Globe, Shield, Terminal, Mail, 
   Linkedin, Github, Facebook, Cpu, ChevronDown, Plane, Menu, X, ExternalLink, 
-  Server, Lock, Activity, Eye, MapPin
+  Server, Lock, Activity, Eye, MapPin, Twitter
 } from 'lucide-react';
 
 const Portfolio = () => {
@@ -374,6 +374,9 @@ const Portfolio = () => {
                     <a href="https://www.facebook.com/rokibul09" target="_blank" rel="noopener noreferrer" className="p-2 bg-slate-800 rounded-lg hover:bg-slate-700 hover:text-blue-400 transition-colors">
                       <Facebook size={20} />
                     </a>
+                    <a href="https://x.com/rokibul_islam09" target="_blank" rel="noopener noreferrer" className="p-2 bg-slate-800 rounded-lg hover:bg-slate-700 hover:text-white transition-colors">
+                      <Twitter size={20} />
+                    </a>
                   </div>
                   <a 
                     href={cvfile}
@@ -570,7 +573,7 @@ const Portfolio = () => {
               Whether you have a question, a project idea, or just want to discuss the latest in Cyber Sec or Cricket matches, my inbox is always open!
             </p>
             
-            <div className="flex flex-col md:flex-row justify-center gap-6">
+            <div className="flex flex-col md:flex-row justify-center gap-1">
               <a href="mailto:mdrokibulislam.nub@gmail.com" className="flex items-center justify-center gap-3 px-8 py-4 bg-slate-900 rounded-xl hover:bg-slate-800 border border-slate-700 hover:border-teal-500 transition-all group hover:-translate-y-1 shadow-lg">
                 <Mail className="text-teal-400 group-hover:scale-110 transition-transform" />
                 <span className="font-semibold text-lg">Email Me</span>
@@ -583,9 +586,13 @@ const Portfolio = () => {
                 <Github className="text-purple-400 group-hover:scale-110 transition-transform" />
                 <span className="font-semibold text-lg">GitHub</span>
               </a>
-              <a href="https://www.facebook.com/rokibul09" target="_blank" rel="noopener noreferrer" className="flex items-center justify-center gap-3 px-8 py-4 bg-slate-900 rounded-xl hover:bg-slate-800 border border-slate-700 hover:border-purple-500 transition-all group hover:-translate-y-1 shadow-lg">
-                <Facebook className="text-purple-400 group-hover:scale-110 transition-transform" />
-                <span className="font-semibold text-lg">GitHub</span>
+              <a href="https://www.facebook.com/rokibul09" target="_blank" rel="noopener noreferrer" className="flex items-center justify-center gap-3 px-8 py-4 bg-slate-900 rounded-xl hover:bg-slate-800 border border-slate-700 hover:border-blue-500 transition-all group hover:-translate-y-1 shadow-lg">
+                <Facebook className="text-blue-400 group-hover:scale-110 transition-transform" />
+                <span className="font-semibold text-lg">Facebook</span>
+              </a>
+              <a href="https://x.com/rokibul_islam09" target="_blank" rel="noopener noreferrer" className="flex items-center justify-center gap-3 px-8 py-4 bg-slate-900 rounded-xl hover:bg-slate-800 border border-slate-700 hover:border-gray-500 transition-all group hover:-translate-y-1 shadow-lg">
+                <Twitter className="text-gray-400 group-hover:scale-110 transition-transform" />
+                <span className="font-semibold text-lg">X</span>
               </a>
             </div>
           </div>
