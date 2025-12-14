@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import cvfile from "./assets/cv.pdf"
 import { 
   User, Code, BookOpen, Coffee, Globe, Shield, Terminal, Mail, 
-  Linkedin, Github, Cpu, ChevronDown, Plane, Menu, X, ExternalLink, 
+  Linkedin, Github, Facebook, Cpu, ChevronDown, Plane, Menu, X, ExternalLink, 
   Server, Lock, Activity, Eye, MapPin
 } from 'lucide-react';
 
