@@ -1,64 +1,25 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { AlertCircle, ArrowUpRight, Newspaper, RefreshCw } from 'lucide-react';
 
-const rssFeeds = [
-  {
-    category: 'Cybersecurity',
-    source: 'The Hacker News',
-    url: 'https://feeds.feedburner.com/TheHackersNews',
-  },
-  {
-    category: 'Developer tech',
-    source: 'The GitHub Blog',
-    url: 'https://github.blog/feed/',
-  },
-  {
-    category: 'AI & machine learning',
-    source: 'OpenAI News',
-    url: 'https://openai.com/news/rss.xml',
-  },
-];
-
 const updateInterval = 60 * 60 * 1000;
 const maximumHeadlines = 6;
+const categories = ['All topics', 'Cybersecurity', 'Developer tech', 'AI & machine learning'];
 
 const formatDate = (date) => {
   if (!date) return 'Recent';
   return new Intl.DateTimeFormat(undefined, { month: 'short', day: 'numeric' }).format(date);
 };
 
-const getHeadlines = async (feed, signal) => {
-  const endpoint = new URL('https://api.rss2json.com/v1/api.json');
-  endpoint.searchParams.set('rss_url', feed.url);
-
-  const response = await fetch(endpoint, { signal });
-  if (!response.ok) throw new Error(`${feed.source} returned ${response.status}`);
-
-  const payload = await response.json();
-  if (payload.status !== 'ok' || !Array.isArray(payload.items)) {
-    throw new Error(`${feed.source} returned an invalid feed`);
-  }
-
-  return payload.items.flatMap((item) => {
-    if (typeof item.title !== 'string' || typeof item.link !== 'string') return [];
-
-    let link;
-    try {
-      link = new URL(item.link);
-    } catch {
-      return [];
-    }
-    if (link.protocol !== 'https:') return [];
-
-    const published = item.pubDate ? new Date(item.pubDate) : null;
-    return [{
-      title: item.title,
-      link: link.href,
-      published: published && !Number.isNaN(published.getTime()) ? published : null,
-      category: feed.category,
-      source: feed.source,
-    }];
+const getHeadlines = async (signal) => {
+  const response = await fetch(`/api/headlines?refresh=${Date.now()}`, {
+    signal,
+    cache: 'no-store',
+    headers: { Accept: 'application/json', 'Cache-Control': 'no-cache' },
   });
+  const payload = await response.json();
+  if (!response.ok) throw new Error(payload.error || `Headlines returned ${response.status}`);
+  if (!Array.isArray(payload.headlines)) throw new Error('The headlines service returned an invalid response.');
+  return payload;
 };
 
 const RecentHappenings = () => {
@@ -82,33 +43,33 @@ const RecentHappenings = () => {
       controller.abort();
     }, 15000);
     try {
-      const results = await Promise.allSettled(
-        rssFeeds.map((feed) => getHeadlines(feed, controller.signal)),
-      );
+      const payload = await getHeadlines(controller.signal);
       if (controller.signal.aborted) {
         if (timedOut) setError('The news feeds took too long to respond. Try again shortly.');
         return;
       }
 
-      const available = results.flatMap((result) => (
-        result.status === 'fulfilled'
-          ? result.value
-            .sort((a, b) => (b.published?.getTime() ?? 0) - (a.published?.getTime() ?? 0))
-            .slice(0, 2)
-          : []
-      ));
-      const failedCount = results.filter((result) => result.status === 'rejected').length;
-
+      const { headlines: available, failedSources = [], fetchedAt } = payload;
       if (available.length === 0) {
         setError('Headlines are temporarily unavailable. Try again shortly.');
       } else {
-        const sorted = available.sort((a, b) => (b.published?.getTime() ?? 0) - (a.published?.getTime() ?? 0));
+        const sorted = available
+          .map((headline) => ({
+            ...headline,
+            published: headline.published ? new Date(headline.published) : null,
+          }))
+          .sort((a, b) => (b.published?.getTime() ?? 0) - (a.published?.getTime() ?? 0));
         setHeadlines(sorted.slice(0, maximumHeadlines));
-        setLastChecked(new Date());
-        if (failedCount > 0) setError('Some news sources could not be reached. Showing the latest available headlines.');
+        const checkedAt = fetchedAt ? new Date(fetchedAt) : new Date();
+        setLastChecked(Number.isNaN(checkedAt.getTime()) ? new Date() : checkedAt);
+        if (failedSources.length > 0) {
+          setError(`Some sources could not be reached (${failedSources.join(', ')}). Showing the latest available headlines.`);
+        }
       }
-    } catch {
-      if (!controller.signal.aborted) setError('Headlines could not be refreshed. Please try again.');
+    } catch (refreshError) {
+      if (!controller.signal.aborted) {
+        setError(refreshError instanceof Error ? refreshError.message : 'Headlines could not be refreshed. Please try again.');
+      }
     } finally {
       window.clearTimeout(timeout);
       if (requestRef.current === controller) {
@@ -130,7 +91,6 @@ const RecentHappenings = () => {
     };
   }, [refreshHeadlines]);
 
-  const categories = ['All topics', ...rssFeeds.map((feed) => feed.category)];
   const visibleHeadlines = headlines
     .filter((headline) => activeCategory === 'All topics' || headline.category === activeCategory);
 
@@ -186,8 +146,8 @@ const RecentHappenings = () => {
 
         {isLoading && headlines.length === 0 ? (
           <div className="happenings-grid" aria-label="Loading headlines">
-            {rssFeeds.map((feed) => (
-              <div className="happening-skeleton" key={feed.category} aria-hidden="true">
+            {Array.from({ length: 3 }, (_, index) => (
+              <div className="happening-skeleton" key={index} aria-hidden="true">
                 <span />
                 <span />
                 <span />
