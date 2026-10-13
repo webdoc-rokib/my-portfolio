@@ -2450,9 +2450,10 @@ textarea:focus-visible {
   width: 48px;
   height: 48px;
   place-items: center;
-  border: 1px solid rgba(63, 151, 255, 0.12);
+  border: 1px solid rgba(91, 169, 255, 0.42);
   border-radius: 50%;
-  background: rgba(91, 169, 255, 0.24);
+  background: transparent;
+  box-shadow: 0 0 12px rgba(22, 139, 255, 0.08);
   opacity: 0;
   pointer-events: none;
   transform: translate3d(-100px, -100px, 0);
@@ -2482,7 +2483,8 @@ textarea:focus-visible {
 .floating-cursor.is-hovering {
   width: 56px;
   height: 56px;
-  background: rgba(91, 169, 255, 0.31);
+  background: transparent;
+  border-color: rgba(91, 169, 255, 0.62);
 }
 
 .floating-cursor.is-pressed {

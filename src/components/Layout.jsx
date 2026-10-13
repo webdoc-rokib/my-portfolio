@@ -30,13 +30,6 @@ const FloatingCursor = () => {
     const animateCursor = () => {
       cursorX += (pointerX - cursorX) * 0.24;
       cursorY += (pointerY - cursorY) * 0.24;
-      const deltaX = pointerX - cursorX;
-      const deltaY = pointerY - cursorY;
-      const distance = Math.hypot(deltaX, deltaY);
-      if (distance > 14) {
-        cursorX = pointerX - (deltaX / distance) * 14;
-        cursorY = pointerY - (deltaY / distance) * 14;
-      }
       cursor.style.transform = `translate3d(${cursorX}px, ${cursorY}px, 0) translate(-50%, -50%)`;
       dot?.style.setProperty('--dot-x', `${pointerX - cursorX}px`);
       dot?.style.setProperty('--dot-y', `${pointerY - cursorY}px`);
