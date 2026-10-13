@@ -2,6 +2,16 @@ import { BookOpen, LockKeyhole, MapPinned, Plane } from 'lucide-react';
 
 export const projects = [
   {
+    title: 'Visa Track',
+    shortLabel: 'Application tracking',
+    category: 'Automation · Web app',
+    description: 'A visa application tracking concept for organizing application status, notifications, and supporting documents.',
+    tech: ['Automation', 'Notifications', 'Database'],
+    icon: Plane,
+    theme: 'violet',
+    link: 'https://github.com/webdoc-rokib/visa-track',
+  },
+  {
     title: 'Safe Ballot',
     shortLabel: 'Secure voting',
     category: 'Security · Web app',
@@ -30,15 +40,5 @@ export const projects = [
     icon: BookOpen,
     theme: 'blue',
     link: 'https://github.com/Northern-University-Bangladesh/ClassWave',
-  },
-  {
-    title: 'Visa Track',
-    shortLabel: 'Application tracking',
-    category: 'Automation · Web app',
-    description: 'A visa application tracking concept for organizing application status, notifications, and supporting documents.',
-    tech: ['Automation', 'Notifications', 'Database'],
-    icon: Plane,
-    theme: 'violet',
-    link: 'https://github.com/webdoc-rokib/visa-track',
   },
 ];
