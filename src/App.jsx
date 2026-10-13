@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Layout from './components/Layout';
 import Home from './pages/Home';
@@ -9,48 +9,25 @@ import Interests from './pages/Interests';
 import Contact from './pages/Contact';
 
 const App = () => {
-  const [visibleSections, setVisibleSections] = useState({});
-
-  // Set Title and Favicon
   useEffect(() => {
-    document.title = "MD Rokibul Islam | Portfolio";
-    
-    // Set dynamic favicon
+    document.title = 'MD Rokibul Islam | Portfolio';
     const link = document.querySelector("link[rel~='icon']") || document.createElement('link');
     link.type = 'image/svg+xml';
     link.rel = 'icon';
-    link.href = 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><text y=".9em" font-size="90">🛡️</text></svg>';
-    document.getElementsByTagName('head')[0].appendChild(link);
-  }, []);
-
-  // Handle Section visibility
-  useEffect(() => {
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          setVisibleSections(prev => ({ ...prev, [entry.target.id]: true }));
-        }
-      });
-    }, { threshold: 0.1 });
-
-    const sections = document.querySelectorAll('section');
-    sections.forEach(sec => observer.observe(sec));
-
-    return () => {
-      sections.forEach(sec => observer.unobserve(sec));
-    };
+    link.href = 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect width="100" height="100" rx="22" fill="%23101416"/><text x="50" y="66" text-anchor="middle" font-size="48" font-family="Arial" font-weight="700" fill="%23b5d7c5">RI</text></svg>';
+    document.head.appendChild(link);
   }, []);
 
   return (
     <Router>
-      <Layout visibleSections={visibleSections}>
+      <Layout>
         <Routes>
-          <Route path="/" element={<Home visibleSections={visibleSections} />} />
-          <Route path="/about" element={<About visibleSections={visibleSections} />} />
-          <Route path="/skills" element={<Skills visibleSections={visibleSections} />} />
-          <Route path="/projects" element={<Projects visibleSections={visibleSections} />} />
-          <Route path="/interests" element={<Interests visibleSections={visibleSections} />} />
-          <Route path="/contact" element={<Contact visibleSections={visibleSections} />} />
+          <Route path="/" element={<Home />} />
+          <Route path="/about" element={<About />} />
+          <Route path="/skills" element={<Skills />} />
+          <Route path="/projects" element={<Projects />} />
+          <Route path="/interests" element={<Interests />} />
+          <Route path="/contact" element={<Contact />} />
         </Routes>
       </Layout>
     </Router>

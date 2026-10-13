@@ -1,168 +1,116 @@
-import React from 'react';
-import cvfile from "../assets/cv.pdf"
-import { 
-  User, Code, BookOpen, Coffee, Globe, Plane,
-  Linkedin, Github, Facebook, Twitter
-} from 'lucide-react';
+import { createElement } from 'react';
+import { Activity, ArrowDown, ArrowUpRight, BookOpen, Code2, Coffee, Github, Linkedin, Plane, ShieldCheck } from 'lucide-react';
+import cvFile from '../assets/cv.pdf';
 
-const About = ({ visibleSections }) => {
-  return (
-    <section id="about" className="py-24 relative overflow-hidden">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-        <div className="grid md:grid-cols-2 gap-16 items-center transition-all duration-1000 transform translate-y-0 opacity-100">
-          
-          <div className="space-y-8">
-            <div className="inline-block">
-              <h2 className="text-3xl md:text-4xl font-bold flex items-center gap-3 mb-2">
-                <span className="text-teal-400"><User className="w-8 h-8" /></span> 
-                About Me
-              </h2>
-              <div className="h-1 w-20 bg-teal-500 rounded-full"></div>
-            </div>
-            
-            <div className="space-y-4 text-slate-300 text-lg leading-relaxed">
-              <p>
-                <span className="text-teal-300 font-bold text-2xl">Hey! 👋</span> I'm <span className="text-white font-semibold">MD Rokibul Islam</span>, a passionate Computer Science student at <span className="text-teal-400 font-semibold">Northern University Bangladesh</span>.
-              </p>
-              <p>
-                My journey began with curiosity—building simple websites, then diving deep into <span className="text-blue-400 font-medium">Network Security</span>, <span className="text-purple-400 font-medium">Ethical Hacking</span>, and <span className="text-green-400 font-medium">Machine Learning</span>. I believe in building secure systems and believe cybersecurity isn't an afterthought—it's a fundamental principle.
-              </p>
-              <p>
-                When I'm not debugging code or analyzing security vulnerabilities, you'll find me exploring new places, catching cricket matches, or brewing the perfect cup of tea. I'm a perpetual learner who thrives on challenges and loves collaborating with creative minds.
-              </p>
-              <p className="text-teal-300 font-semibold italic">
-                "Code that's not secure is just a beautiful vulnerability waiting to happen."
-              </p>
-            </div>
-            
-            <div className="grid grid-cols-3 gap-4">
-              <div className="p-4 bg-slate-900/50 rounded-xl border border-slate-700/50 hover:border-teal-500/50 transition-all hover:-translate-y-1 text-center">
-                <div className="flex items-center gap-3 mb-2 justify-center">
-                  <Code className="text-teal-400" size={20} />
-                </div>
-                <div className="text-sm text-slate-400">Languages</div>
-                <div className="text-lg font-bold text-teal-400 mt-1">8+</div>
-              </div>
-              
-              <div className="p-4 bg-slate-900/50 rounded-xl border border-slate-700/50 hover:border-blue-500/50 transition-all hover:-translate-y-1 text-center">
-                <div className="flex items-center gap-3 mb-2 justify-center">
-                  <BookOpen className="text-blue-400" size={20} />
-                </div>
-                <div className="text-sm text-slate-400">Coursework</div>
-                <div className="text-lg font-bold text-blue-400 mt-1">30+</div>
-              </div>
-              
-              <div className="p-4 bg-slate-900/50 rounded-xl border border-slate-700/50 hover:border-purple-500/50 transition-all hover:-translate-y-1 text-center">
-                <div className="flex items-center gap-3 mb-2 justify-center">
-                  <Globe className="text-purple-400" size={20} />
-                </div>
-                <div className="text-sm text-slate-400">Open Source</div>
-                <div className="text-lg font-bold text-purple-400 mt-1">10+</div>
-              </div>
-            </div>
-            
-            <div className="grid grid-cols-2 gap-4">
-              <div className="p-4 bg-slate-900/50 rounded-xl border border-slate-700/50 hover:border-teal-500/50 transition-all hover:-translate-y-1">
-                <div className="flex items-center gap-3 mb-2">
-                  <BookOpen className="text-blue-400" size={20} />
-                  <span className="font-semibold text-white">Education</span>
-                </div>
-                <div className="text-sm text-slate-400">B.Sc. in CSE</div>
-                <div className="text-xs text-teal-500/80">Northern University Bangladesh</div>
-              </div>
-              
-              <div className="p-4 bg-slate-900/50 rounded-xl border border-slate-700/50 hover:border-teal-500/50 transition-all hover:-translate-y-1">
-                <div className="flex items-center gap-3 mb-2">
-                  <Code className="text-teal-400" size={20} />
-                  <span className="font-semibold text-white">Occupation</span>
-                </div>
-                <div className="text-sm text-slate-400">Student & Web Dev</div>
-                <div className="text-xs text-green-500/80">Available for Hire</div>
-              </div>
-            </div>
+const socialLinks = [
+  { label: 'GitHub', href: 'https://github.com/webdoc-rokib/', icon: Github },
+  { label: 'LinkedIn', href: 'https://www.linkedin.com/in/rokib09/', icon: Linkedin },
+];
 
-            {/* Personal Likes */}
-            <div className="flex flex-wrap gap-3">
-              {[
-                { icon: Code, text: "Coding", color: "text-purple-400", bg: "bg-purple-400/10", border: "border-purple-400/20" },
-                { icon: Plane, text: "Travel", color: "text-blue-400", bg: "bg-blue-400/10", border: "border-blue-400/20" },
-                { icon: Coffee, text: "Tea", color: "text-amber-500", bg: "bg-amber-500/10", border: "border-amber-500/20" },
-                { icon: Globe, text: "Cricket", color: "text-green-400", bg: "bg-green-400/10", border: "border-green-400/20" }
-              ].map((item, index) => (
-                <span key={index} className={`px-4 py-2 ${item.bg} rounded-full text-sm border ${item.border} flex items-center gap-2 hover:scale-105 transition-transform cursor-default`}>
-                  <item.icon size={16} className={item.color} /> 
-                  <span className="text-slate-200">{item.text}</span>
-                </span>
-              ))}
+const interests = [
+  { label: 'Building things', icon: Code2 },
+  { label: 'Exploring new places', icon: Plane },
+  { label: 'Cricket', icon: Activity },
+  { label: 'A good cup of tea', icon: Coffee },
+];
+
+const About = () => (
+  <section id="about" className="page-section about-page">
+    <div className="site-container">
+      <header className="page-heading">
+        <p className="section-kicker">A little about me</p>
+        <h1>Curiosity, care, and a builder’s mindset.</h1>
+        <p className="section-intro">
+          I’m MD Rokibul Islam, a Computer Science student and web developer at Northern University Bangladesh.
+          I care about making technology useful, understandable, and secure.
+        </p>
+      </header>
+
+      <div className="about-layout">
+        <div className="about-story">
+          <div className="about-story-heading">
+            <span className="about-icon"><ShieldCheck size={20} /></span>
+            <div>
+              <span className="section-kicker">How I approach my work</span>
+              <h2>Thoughtful by default.</h2>
             </div>
           </div>
-
-          {/* Visual/Card Area */}
-          <div className="relative group">
-            <div className="absolute -inset-1 bg-gradient-to-r from-teal-500 to-blue-600 rounded-2xl blur opacity-25 group-hover:opacity-75 transition duration-1000 group-hover:duration-200"></div>
-            <div className="relative bg-slate-900 p-8 rounded-2xl border border-slate-700/50 shadow-2xl">
-              <div className="flex items-center gap-5 mb-8 border-b border-slate-800 pb-8">
-                <div className="relative">
-                  <div className="w-20 h-20 rounded-full bg-slate-800 flex items-center justify-center text-3xl font-bold text-white relative z-10 border-2 border-slate-700">
-                    MR
-                  </div>
-                  <div className="absolute inset-0 bg-teal-500 blur-xl opacity-20 animate-pulse"></div>
-                </div>
-                <div>
-                  <h3 className="text-2xl font-bold text-white">MD Rokibul Islam</h3>
-                  <p className="text-teal-400 font-mono text-sm mt-1">@CyberSecEnthusiast</p>
-                  <div className="flex gap-2 mt-2">
-                     <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>
-                     <span className="text-xs text-slate-400">Online & Coding</span>
-                  </div>
-                </div>
-              </div>
-              
-              <div className="space-y-4 font-mono text-sm bg-slate-950 p-4 rounded-lg border border-slate-800">
-                <div className="flex gap-2">
-                  <span className="text-purple-400">const</span> <span className="text-blue-400">skills</span> = <span className="text-yellow-300">['Secure Coding', 'Ethical Hacking']</span>;
-                </div>
-                <div className="flex gap-2">
-                  <span className="text-purple-400">let</span> <span className="text-blue-400">passion</span> = <span className="text-green-400">'Learning AI'</span>;
-                </div>
-                <div className="flex gap-2">
-                  <span className="text-purple-400">function</span> <span className="text-blue-400">future</span>() {'{'}
-                </div>
-                <div className="pl-4">
-                   <span className="text-purple-400">return</span> <span className="text-green-400">'Cyber Security Expert'</span>;
-                </div>
-                <div>{'}'}</div>
-              </div>
-
-              <div className="mt-8 flex justify-between items-center">
-                <div className="flex gap-4">
-                  <a href="https://github.com/webdoc-rokib/" target="_blank" rel="noopener noreferrer" className="p-2 bg-slate-800 rounded-lg hover:bg-slate-700 hover:text-teal-400 transition-colors">
-                    <Github size={20} />
-                  </a>
-                  <a href="https://www.linkedin.com/in/rokib09" target="_blank" rel="noopener noreferrer" className="p-2 bg-slate-800 rounded-lg hover:bg-slate-700 hover:text-blue-400 transition-colors">
-                    <Linkedin size={20} />
-                  </a>
-                  <a href="https://www.facebook.com/rokibul09" target="_blank" rel="noopener noreferrer" className="p-2 bg-slate-800 rounded-lg hover:bg-slate-700 hover:text-blue-400 transition-colors">
-                    <Facebook size={20} />
-                  </a>
-                  <a href="https://x.com/rokibul_islam09" target="_blank" rel="noopener noreferrer" className="p-2 bg-slate-800 rounded-lg hover:bg-slate-700 hover:text-white transition-colors">
-                    <Twitter size={20} />
-                  </a>
-                </div>
-                <a 
-                  href={cvfile}
-                  download="MD_Rokibul_Islam_CV.pdf"
-                  className="text-xs font-bold uppercase tracking-wider bg-gradient-to-r from-teal-500 to-blue-500 text-white px-4 py-2 rounded-lg shadow-lg shadow-teal-500/20 hover:shadow-teal-500/40 transition-all hover:-translate-y-0.5 flex items-center justify-center"
-                >
-                  Download CV
-                </a>
-              </div>
-            </div>
+          <p>
+            My path started with building websites and grew into a wider interest in how software works,
+            how people use it, and how we can protect it. Today I’m developing my web skills while learning
+            more about network security, ethical hacking, and machine learning.
+          </p>
+          <p>
+            I believe good development is more than getting a feature to work. It’s making the experience
+            clear, considering edge cases, and treating security as part of the process—not an afterthought.
+            I enjoy learning in public, working through challenging problems, and collaborating with people
+            who care about the details.
+          </p>
+          <blockquote>
+            “Build useful things. Make them clear. Keep learning how to make them safer.”
+          </blockquote>
+          <div className="about-actions">
+            <a className="button button-primary" href={cvFile} download="MD_Rokibul_Islam_CV.pdf">
+              Download résumé <ArrowDown size={16} />
+            </a>
+            {socialLinks.map(({ label, href, icon }) => (
+              <a key={label} className="about-social-link" href={href} target="_blank" rel="noopener noreferrer" aria-label={`Visit my ${label} profile`}>
+                {createElement(icon, { size: 17 })}
+              </a>
+            ))}
           </div>
         </div>
+
+        <aside className="about-profile" aria-label="Profile and education">
+          <div className="about-photo">
+            <img src="/portrait-editorial.jpg" alt="MD Rokibul Islam" />
+            <span className="about-photo-label"><span /> Based in Bangladesh</span>
+          </div>
+          <div className="about-facts">
+            <div className="about-fact">
+              <span className="about-fact-icon"><BookOpen size={17} /></span>
+              <div><span>Education</span><strong>B.Sc. in Computer Science & Engineering</strong><small>Northern University Bangladesh</small></div>
+            </div>
+            <div className="about-fact">
+              <span className="about-fact-icon"><Code2 size={17} /></span>
+              <div><span>Current focus</span><strong>Web development</strong><small>With security in mind</small></div>
+            </div>
+            <a className="about-profile-link" href="https://www.linkedin.com/in/rokib09/" target="_blank" rel="noopener noreferrer">
+              More about my background <ArrowUpRight size={15} />
+            </a>
+          </div>
+        </aside>
       </div>
-    </section>
-  );
-};
+
+      <section className="about-workspace" aria-labelledby="about-workspace-title">
+        <img
+          src="/working-at-desk.jpg"
+          alt="Rokibul working at his computer in his workspace"
+          loading="lazy"
+          decoding="async"
+        />
+        <div className="about-workspace-copy">
+          <p className="section-kicker">In the process</p>
+          <h2 id="about-workspace-title">Learning by building.</h2>
+          <p>
+            Every project is a chance to sharpen my craft, explore new ideas, and make the web a little more useful.
+          </p>
+        </div>
+      </section>
+
+      <div className="about-interests">
+        <div>
+          <p className="section-kicker">Outside the editor</p>
+          <h2>What keeps me curious.</h2>
+        </div>
+        <div className="interest-chips">
+          {interests.map(({ label, icon }) => (
+            <span className="interest-chip" key={label}>{createElement(icon, { size: 15 })}{label}</span>
+          ))}
+        </div>
+      </div>
+    </div>
+  </section>
+);
 
 export default About;

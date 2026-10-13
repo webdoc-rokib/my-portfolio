@@ -1,149 +1,147 @@
-import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { Mail, Eye, ChevronDown } from 'lucide-react';
+import { useState } from 'react';
+import { ArrowDown, ArrowRight, ArrowUpRight, Github, Linkedin, Mail, ShieldCheck, Sparkles } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import cvFile from '../assets/cv.pdf';
+import { projects } from '../data/projects';
+import RecentHappenings from '../components/RecentHappenings';
 
-const Home = ({ visibleSections }) => {
-  const [loopNum, setLoopNum] = useState(0);
-  const [isDeleting, setIsDeleting] = useState(false);
-  const [text, setText] = useState('');
-  const [delta, setDelta] = useState(100 - Math.random() * 50);
-  const toRotate = ["Web Developer", "Cyber Security Enthusiast", "Tech Learner"];
-  const period = 2000;
-  const navigate = useNavigate();
-
-  useEffect(() => {
-    let ticker = setInterval(() => {
-      tick();
-    }, delta);
-
-    return () => { clearInterval(ticker) };
-  }, [text, delta]);
-
-  const tick = () => {
-    let i = loopNum % toRotate.length;
-    let fullText = toRotate[i];
-    let updatedText = isDeleting ? fullText.substring(0, text.length - 1) : fullText.substring(0, text.length + 1);
-
-    setText(updatedText);
-
-    if (isDeleting) {
-      setDelta(prevDelta => prevDelta / 2);
-    }
-
-    if (!isDeleting && updatedText === fullText) {
-      setIsDeleting(true);
-      setDelta(period);
-    } else if (isDeleting && updatedText === '') {
-      setIsDeleting(false);
-      setLoopNum(loopNum + 1);
-      setDelta(500);
-    }
-  };
+const Home = () => {
+  const [portraitAvailable, setPortraitAvailable] = useState(true);
 
   return (
-    <section id="home" className="min-h-screen flex items-center justify-center relative overflow-hidden pt-16">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 w-full">
-        <div className="grid md:grid-cols-2 gap-12 items-center">
-          
-          {/* Text Content */}
-          <div className="transition-all duration-1000 transform translate-y-0 opacity-100">
-            <div className="inline-flex items-center gap-2 p-2 px-4 rounded-full bg-slate-900/50 border border-teal-500/30 mb-6 hover:border-teal-400/60 transition-colors">
-              <span className="relative flex h-3 w-3">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-teal-400 opacity-75"></span>
-                <span className="relative inline-flex rounded-full h-3 w-3 bg-teal-500"></span>
-              </span>
-              <span className="text-teal-400 font-mono text-xs tracking-wider">SYSTEM ONLINE</span>
-            </div>
-            
-            <h1 className="text-5xl md:text-7xl font-bold mb-6 tracking-tight leading-tight">
-              MD <span className="text-transparent bg-clip-text bg-gradient-to-r from-teal-400 via-blue-500 to-purple-600 animate-gradient">ROKIBUL</span> ISLAM
+    <div className="home-page">
+      <section id="home" className="hero-section">
+        <div className="site-container hero-grid">
+          <div className="hero-copy">
+            <div className="eyebrow"><span className="eyebrow-dot" /> Portfolio · 2026</div>
+            <p className="hero-overline">Hi, I'm Rokibul Islam</p>
+            <h1>
+              I build thoughtful
+              <span className="hero-accent"> web experiences.</span>
             </h1>
-            
-            <div className="text-xl md:text-2xl text-slate-400 mb-8 h-[40px] font-mono">
-              I am a <span className="text-teal-400 border-r-2 border-teal-400 pr-1 animate-blink">{text}</span>
-            </div>
-            
-            <p className="text-slate-400 mb-8 max-w-lg leading-relaxed">
-              Building secure, scalable solutions at the intersection of <span className="text-teal-300 font-semibold">Web Development</span>, <span className="text-blue-300 font-semibold">Cyber Security</span>, and <span className="text-purple-300 font-semibold">AI</span>. Passionate about solving real-world problems through code.
+            <p className="hero-description">
+              Computer Science student and web developer with a security-first mindset.
+              I enjoy turning complex ideas into useful, clear, and dependable products.
             </p>
-            
-            <div className="grid grid-cols-3 gap-4 mb-8">
-              <div className="bg-slate-900/50 border border-slate-700 rounded-lg p-4 hover:border-teal-500/50 transition-all">
-                <div className="text-2xl font-bold text-teal-400">15+</div>
-                <div className="text-xs text-slate-400">Projects</div>
-              </div>
-              <div className="bg-slate-900/50 border border-slate-700 rounded-lg p-4 hover:border-blue-500/50 transition-all">
-                <div className="text-2xl font-bold text-blue-400">2+</div>
-                <div className="text-xs text-slate-400">Years Coding</div>
-              </div>
-              <div className="bg-slate-900/50 border border-slate-700 rounded-lg p-4 hover:border-purple-500/50 transition-all">
-                <div className="text-2xl font-bold text-purple-400">∞</div>
-                <div className="text-xs text-slate-400">Always Learning</div>
-              </div>
+
+            <div className="hero-actions">
+              <Link to="/projects" className="button button-primary">
+                Explore my work <ArrowRight size={17} />
+              </Link>
+              <Link to="/contact" className="button button-secondary">
+                <Mail size={17} /> Get in touch
+              </Link>
             </div>
-            
-            <div className="flex flex-col sm:flex-row gap-4">
-              <button 
-                onClick={() => navigate('/contact')}
-                className="px-8 py-4 rounded-lg bg-gradient-to-r from-teal-600 to-teal-500 hover:from-teal-500 hover:to-teal-400 text-white font-bold transition-all shadow-[0_0_20px_rgba(20,184,166,0.3)] hover:shadow-[0_0_30px_rgba(20,184,166,0.5)] hover:scale-105 flex items-center justify-center gap-2 group"
-              >
-                <Mail size={20} className="group-hover:rotate-12 transition-transform" /> Let's Work Together
-              </button>
-              <button 
-                onClick={() => navigate('/projects')}
-                className="px-8 py-4 rounded-lg bg-slate-800 hover:bg-slate-700 border border-slate-700 hover:border-teal-500/50 text-white font-semibold transition-all flex items-center justify-center gap-2 group hover:scale-105"
-              >
-                <Eye size={20} className="group-hover:scale-110 transition-transform" /> Explore My Work
-              </button>
+
+            <a className="resume-link" href={cvFile} download="MD_Rokibul_Islam_CV.pdf">
+              Download résumé <ArrowDown size={15} />
+            </a>
+
+            <div className="hero-specialties" aria-label="Areas of focus">
+              <span><ShieldCheck size={16} /> Security-minded development</span>
+              <span><Sparkles size={16} /> Curious by design</span>
             </div>
           </div>
 
-          {/* Terminal/Visual Component */}
-          <div className="hidden md:block transition-all duration-1000 delay-300 transform translate-x-0 opacity-100">
-            <div className="rounded-xl overflow-hidden bg-slate-900 border border-slate-700 shadow-2xl hover:shadow-[0_0_30px_rgba(45,212,191,0.15)] transition-shadow duration-500 group">
-              {/* Terminal Header */}
-              <div className="bg-slate-800 px-4 py-3 flex items-center justify-between border-b border-slate-700">
-                <div className="flex space-x-2">
-                  <div className="w-3 h-3 rounded-full bg-red-500"></div>
-                  <div className="w-3 h-3 rounded-full bg-yellow-500"></div>
-                  <div className="w-3 h-3 rounded-full bg-green-500"></div>
+          <div className="portrait-column">
+            <div className="portrait-frame">
+              <div className="portrait-backdrop" />
+              {portraitAvailable ? (
+                <img
+                  className="portrait-image"
+                  src="/portrait.jpg"
+                  alt="Portrait of MD Rokibul Islam"
+                  onError={() => setPortraitAvailable(false)}
+                />
+              ) : (
+                <div className="portrait-placeholder" aria-label="Portrait placeholder">
+                  <span className="portrait-monogram">RI</span>
+                  <span className="portrait-placeholder-caption">Your portrait goes here</span>
                 </div>
-                <div className="text-slate-400 text-xs font-mono">rokibul@dev:~/portfolio</div>
-                <div className="w-4"></div>
+              )}
+              <div className="portrait-note">
+                <span className="portrait-note-mark"><ShieldCheck size={19} /></span>
+                <span><strong>Build with care.</strong><small>Design · Development · Security</small></span>
               </div>
-              {/* Terminal Body */}
-              <div className="p-6 font-mono text-sm space-y-4">
-                <div className="flex gap-2">
-                  <span className="text-teal-400">➜</span>
-                  <span className="text-blue-400">~</span>
-                  <span className="text-slate-300">$ ./init_profile.sh --verbose</span>
-                </div>
-                <div className="space-y-2 text-slate-400">
-                  <p className="text-green-400">✔ Loading core modules...</p>
-                  <p className="text-green-400">✔ Initializing security protocols...</p>
-                  <p className="text-green-400">✔ Accessing database...</p>
-                  <div className="pl-4 border-l-2 border-slate-700 my-2">
-                    <p>Name: <span className="text-yellow-300">MD Rokibul Islam</span></p>
-                    <p>Role: <span className="text-yellow-300">Student & Developer</span></p>
-                    <p>Focus: <span className="text-yellow-300">CyberSec, AI, Web</span></p>
-                    <p>Status: <span className="text-teal-300 animate-pulse">Ready to Work</span></p>
+            </div>
+            <div className="portrait-orbit orbit-one" />
+            <div className="portrait-orbit orbit-two" />
+          </div>
+        </div>
+        <a href="#featured-work" className="scroll-cue" aria-label="Scroll to featured work">
+          <span>Scroll to explore</span><ArrowDown size={15} />
+        </a>
+      </section>
+
+      <section id="featured-work" className="featured-section">
+        <div className="site-container">
+          <div className="section-heading">
+            <div>
+              <p className="section-kicker">Selected work</p>
+              <h2>Ideas made useful.</h2>
+              <p className="section-intro">A few projects that reflect how I think, build, and solve problems.</p>
+            </div>
+            <Link to="/projects" className="text-link">All projects <ArrowUpRight size={16} /></Link>
+          </div>
+
+          <div className="featured-grid">
+            {projects.slice(0, 3).map((project, index) => {
+              const ProjectIcon = project.icon;
+              return (
+                <article className={`project-card project-card-${project.theme}`} key={project.title}>
+                  <div className="project-cover" aria-hidden="true">
+                    <div className="cover-window">
+                      <div className="cover-window-bar"><span /><span /><span /></div>
+                      <div className="cover-window-content">
+                        <ProjectIcon size={31} strokeWidth={1.5} />
+                        <span>{project.shortLabel}</span>
+                      </div>
+                    </div>
+                    <span className="cover-index">0{index + 1}</span>
                   </div>
-                </div>
-                <div className="flex gap-2 items-center">
-                  <span className="text-teal-400">➜</span>
-                  <span className="text-blue-400">~</span>
-                  <span className="w-2 h-4 bg-slate-400 animate-pulse"></span>
-                </div>
-              </div>
-            </div>
+                  <div className="project-card-copy">
+                    <div className="project-card-title">
+                      <h3>{project.title}</h3>
+                      <span className="project-category">{project.category}</span>
+                    </div>
+                    <p>{project.description}</p>
+                    <div className="project-tags">
+                      {project.tech.slice(0, 3).map((technology) => <span key={technology}>{technology}</span>)}
+                    </div>
+                    <a href={project.link} target="_blank" rel="noopener noreferrer" className="project-link">
+                      View source <ArrowUpRight size={16} />
+                    </a>
+                  </div>
+                </article>
+              );
+            })}
+          </div>
+
+          <div className="home-bottom-note">
+            <span className="home-bottom-icon"><Github size={18} /></span>
+            <p>There’s more in progress. Follow along on GitHub.</p>
+            <a href="https://github.com/webdoc-rokib/" target="_blank" rel="noopener noreferrer" aria-label="Visit Rokibul's GitHub profile">
+              <ArrowUpRight size={18} />
+            </a>
           </div>
         </div>
+      </section>
 
-        <div className="absolute bottom-10 left-1/2 transform -translate-x-1/2 animate-bounce cursor-pointer" onClick={() => navigate('/about')}>
-          <ChevronDown size={32} className="text-slate-500 hover:text-teal-400 transition-colors" />
+      <RecentHappenings />
+
+      <section className="home-contact-strip">
+        <div className="site-container contact-strip-inner">
+          <div>
+            <p className="section-kicker">Have something in mind?</p>
+            <h2>Let’s make it happen.</h2>
+          </div>
+          <div className="contact-strip-actions">
+            <a href="https://www.linkedin.com/in/rokib09/" target="_blank" rel="noopener noreferrer" aria-label="Connect on LinkedIn"><Linkedin size={19} /></a>
+            <Link to="/contact" className="button button-primary">Start a conversation <ArrowRight size={17} /></Link>
+          </div>
         </div>
-      </div>
-    </section>
+      </section>
+    </div>
   );
 };
 

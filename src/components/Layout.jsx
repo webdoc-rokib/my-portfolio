@@ -1,145 +1,311 @@
-import React, { useState, useEffect } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
-import { Menu, X } from 'lucide-react';
+import { useEffect, useRef, useState } from 'react';
+import { ArrowUpRight, Menu, X } from 'lucide-react';
+import { Link, NavLink, useLocation } from 'react-router-dom';
 
-const Layout = ({ children, visibleSections }) => {
-  const [scrolled, setScrolled] = useState(false);
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const location = useLocation();
-  const navigate = useNavigate();
+const navLinks = [
+  { path: '/', label: 'Home' },
+  { path: '/about', label: 'About' },
+  { path: '/skills', label: 'Skills' },
+  { path: '/projects', label: 'Projects' },
+  { path: '/interests', label: 'Focus' },
+];
+
+const FloatingCursor = () => {
+  const cursorRef = useRef(null);
 
   useEffect(() => {
-    const handleScroll = () => {
-      setScrolled(window.scrollY > 50);
+    const cursor = cursorRef.current;
+    const finePointer = window.matchMedia('(hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference)');
+    if (!finePointer.matches || !cursor) return undefined;
+
+    const root = document.documentElement;
+    const dot = cursor.querySelector('span');
+    let animationFrame = 0;
+    let pointerX = 0;
+    let pointerY = 0;
+    let cursorX = 0;
+    let cursorY = 0;
+    let hasPosition = false;
+
+    const animateCursor = () => {
+      cursorX += (pointerX - cursorX) * 0.24;
+      cursorY += (pointerY - cursorY) * 0.24;
+      const deltaX = pointerX - cursorX;
+      const deltaY = pointerY - cursorY;
+      const distance = Math.hypot(deltaX, deltaY);
+      if (distance > 14) {
+        cursorX = pointerX - (deltaX / distance) * 14;
+        cursorY = pointerY - (deltaY / distance) * 14;
+      }
+      cursor.style.transform = `translate3d(${cursorX}px, ${cursorY}px, 0) translate(-50%, -50%)`;
+      dot?.style.setProperty('--dot-x', `${pointerX - cursorX}px`);
+      dot?.style.setProperty('--dot-y', `${pointerY - cursorY}px`);
+
+      if (Math.abs(pointerX - cursorX) > 0.15 || Math.abs(pointerY - cursorY) > 0.15) {
+        animationFrame = requestAnimationFrame(animateCursor);
+      } else {
+        animationFrame = 0;
+      }
     };
-    window.addEventListener('scroll', handleScroll);
 
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          visibleSections[entry.target.id] = true;
-        }
-      });
-    }, { threshold: 0.1 });
+    const handlePointerMove = (event) => {
+      if (event.pointerType === 'touch') return;
+      pointerX = event.clientX;
+      pointerY = event.clientY;
+      if (!hasPosition) {
+        cursorX = pointerX;
+        cursorY = pointerY;
+        hasPosition = true;
+      }
+      cursor.classList.add('is-visible');
+      root.classList.add('custom-cursor-active');
+      if (!animationFrame) animationFrame = requestAnimationFrame(animateCursor);
+    };
 
-    const sections = document.querySelectorAll('section');
-    sections.forEach(sec => observer.observe(sec));
+    const handlePointerOver = (event) => {
+      if (event.target instanceof Element && event.target.closest('a, button, input, textarea, select, [role="button"]')) {
+        cursor.classList.add('is-hovering');
+      } else {
+        cursor.classList.remove('is-hovering');
+      }
+    };
+
+    const hideCursor = () => {
+      cursor.classList.remove('is-visible', 'is-hovering', 'is-pressed');
+      root.classList.remove('custom-cursor-active');
+      cancelAnimationFrame(animationFrame);
+      animationFrame = 0;
+      hasPosition = false;
+      dot?.style.removeProperty('--dot-x');
+      dot?.style.removeProperty('--dot-y');
+    };
+
+    const handlePointerDown = () => cursor.classList.add('is-pressed');
+    const handlePointerUp = () => cursor.classList.remove('is-pressed');
+    const handleKeyDown = () => hideCursor();
+
+    window.addEventListener('pointermove', handlePointerMove, { passive: true });
+    window.addEventListener('pointerover', handlePointerOver, { passive: true });
+    window.addEventListener('pointerleave', hideCursor);
+    window.addEventListener('pointerdown', handlePointerDown, { passive: true });
+    window.addEventListener('pointerup', handlePointerUp, { passive: true });
+    window.addEventListener('keydown', handleKeyDown);
 
     return () => {
-      window.removeEventListener('scroll', handleScroll);
-      sections.forEach(sec => observer.unobserve(sec));
+      cancelAnimationFrame(animationFrame);
+      root.classList.remove('custom-cursor-active');
+      window.removeEventListener('pointermove', handlePointerMove);
+      window.removeEventListener('pointerover', handlePointerOver);
+      window.removeEventListener('pointerleave', hideCursor);
+      window.removeEventListener('pointerdown', handlePointerDown);
+      window.removeEventListener('pointerup', handlePointerUp);
+      window.removeEventListener('keydown', handleKeyDown);
     };
   }, []);
 
-  const navLinks = [
-    { path: '/', label: 'Home' },
-    { path: '/about', label: 'About' },
-    { path: '/skills', label: 'Skills' },
-    { path: '/projects', label: 'Projects' },
-    { path: '/interests', label: 'Interests' },
-    { path: '/contact', label: 'Contact' },
-  ];
+  return <div className="floating-cursor" aria-hidden="true" ref={cursorRef}><span /></div>;
+};
 
-  const isActive = (path) => location.pathname === path;
+const Layout = ({ children }) => {
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const location = useLocation();
+
+  useEffect(() => {
+    const behavior = window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth';
+    window.scrollTo({ top: 0, behavior });
+  }, [location.pathname]);
+
+  useEffect(() => {
+    const main = document.getElementById('main-content');
+    const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const finePointer = window.matchMedia('(hover: hover) and (pointer: fine)');
+    if (!main || reducedMotion) return undefined;
+
+    const motionSelector = [
+      '.hero-copy > *',
+      '.portrait-frame',
+      '.section-heading',
+      '.project-card',
+      '.home-bottom-note',
+      '.contact-strip-inner',
+      '.happenings-heading',
+      '.happenings-toolbar',
+      '.happening-card',
+      '.page-heading > *',
+      '.about-story',
+      '.about-profile',
+      '.about-workspace',
+      '.about-interests',
+      '.skills-toolbar',
+      '.skill-card',
+      '.learning-section',
+      '.learning-card',
+      '.growth-card',
+      '.focus-card',
+      '.contact-aside',
+      '.contact-form-card',
+      '.projects-more',
+    ].join(', ');
+    const tiltSelector = '.project-card, .skill-card, .focus-card';
+    let observedCount = 0;
+
+    const observer = 'IntersectionObserver' in window
+      ? new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.dataset.motionVisible = 'true';
+            observer.unobserve(entry.target);
+          }
+        });
+      }, { threshold: 0.12, rootMargin: '0px 0px -36px 0px' })
+      : null;
+
+    const observeElements = (root) => {
+      if (root instanceof Element && root.matches(motionSelector) && root.dataset.motionItem !== 'true') {
+        root.dataset.motionItem = 'true';
+        root.style.setProperty('--motion-delay', `${Math.min((observedCount % 5) * 65, 260)}ms`);
+        observedCount += 1;
+        if (observer) {
+          root.dataset.motionVisible = 'false';
+          observer.observe(root);
+        } else {
+          root.dataset.motionVisible = 'true';
+        }
+      }
+
+      if (root instanceof Element || root instanceof Document) {
+        root.querySelectorAll(motionSelector).forEach((element) => {
+          if (element.dataset.motionItem === 'true') return;
+          element.dataset.motionItem = 'true';
+          element.style.setProperty('--motion-delay', `${Math.min((observedCount % 5) * 65, 260)}ms`);
+          observedCount += 1;
+          if (observer) {
+            element.dataset.motionVisible = 'false';
+            observer.observe(element);
+          } else {
+            element.dataset.motionVisible = 'true';
+          }
+        });
+      }
+    };
+
+    main.dataset.motionReady = 'true';
+    observeElements(main);
+
+    const mutationObserver = new MutationObserver((records) => {
+      records.forEach((record) => record.addedNodes.forEach(observeElements));
+    });
+    mutationObserver.observe(main, { childList: true, subtree: true });
+
+    const handlePointerMove = (event) => {
+      if (!finePointer.matches || event.pointerType === 'touch') return;
+      const card = event.target instanceof Element ? event.target.closest(tiltSelector) : null;
+      if (!card || !main.contains(card)) return;
+
+      const bounds = card.getBoundingClientRect();
+      const tiltX = ((event.clientX - bounds.left) / bounds.width - 0.5) * 5;
+      const tiltY = ((event.clientY - bounds.top) / bounds.height - 0.5) * 5;
+      card.style.setProperty('--tilt-x', tiltX.toFixed(2));
+      card.style.setProperty('--tilt-y', tiltY.toFixed(2));
+      card.style.setProperty('--spotlight-x', `${((event.clientX - bounds.left) / bounds.width) * 100}%`);
+      card.style.setProperty('--spotlight-y', `${((event.clientY - bounds.top) / bounds.height) * 100}%`);
+    };
+
+    const handlePointerOut = (event) => {
+      const card = event.target instanceof Element ? event.target.closest(tiltSelector) : null;
+      if (!card || (event.relatedTarget instanceof Node && card.contains(event.relatedTarget))) return;
+      card.style.removeProperty('--tilt-x');
+      card.style.removeProperty('--tilt-y');
+      card.style.removeProperty('--spotlight-x');
+      card.style.removeProperty('--spotlight-y');
+    };
+
+    if (finePointer.matches) {
+      main.addEventListener('pointermove', handlePointerMove, { passive: true });
+      main.addEventListener('pointerout', handlePointerOut, { passive: true });
+    }
+
+    return () => {
+      observer?.disconnect();
+      mutationObserver.disconnect();
+      main.removeEventListener('pointermove', handlePointerMove);
+      main.removeEventListener('pointerout', handlePointerOut);
+      delete main.dataset.motionReady;
+      main.querySelectorAll('[data-motion-item]').forEach((element) => {
+        delete element.dataset.motionItem;
+        delete element.dataset.motionVisible;
+        element.style.removeProperty('--motion-delay');
+        element.style.removeProperty('--tilt-x');
+        element.style.removeProperty('--tilt-y');
+        element.style.removeProperty('--spotlight-x');
+        element.style.removeProperty('--spotlight-y');
+      });
+    };
+  }, [location.pathname]);
+
+  useEffect(() => {
+    const handleKeyDown = (event) => {
+      if (event.key === 'Escape') setIsMenuOpen(false);
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, []);
 
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-100 font-sans selection:bg-teal-500 selection:text-white overflow-x-hidden">
-      {/* Dynamic Background */}
-      <div className="fixed inset-0 z-0 pointer-events-none">
-        <div className="absolute inset-0 bg-[linear-gradient(to_right,#4f4f4f2e_1px,transparent_1px),linear-gradient(to_bottom,#4f4f4f2e_1px,transparent_1px)] bg-[size:14px_24px] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_0%,#000_70%,transparent_100%)]" />
-        <div className="absolute top-0 left-0 right-0 h-[500px] bg-gradient-to-b from-teal-500/10 via-blue-500/5 to-transparent blur-3xl" />
-      </div>
+    <div className="site-shell">
+      <a className="skip-link" href="#main-content">Skip to content</a>
+      <header className="site-header">
+        <div className="site-container header-inner">
+          <Link to="/" className="brand" aria-label="MD Rokibul Islam home">
+            <span className="brand-mark">RI</span>
+            <span className="brand-name">Rokibul Islam<small>Developer · Security enthusiast</small></span>
+          </Link>
 
-      {/* Navigation */}
-      <nav className={`fixed w-full z-50 transition-all duration-300 ${scrolled ? 'bg-slate-950/80 backdrop-blur-md border-b border-teal-500/20' : 'bg-transparent'}`}>
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-16">
-            <div className="flex-shrink-0 cursor-pointer group" onClick={() => navigate('/')}>
-              <span className="text-2xl font-bold bg-gradient-to-r from-teal-400 to-blue-500 bg-clip-text text-transparent group-hover:from-teal-300 group-hover:to-blue-400 transition-all duration-300">
-                MD.RI<span className="text-teal-500 animate-pulse">_</span>
-              </span>
-            </div>
-            
-            {/* Desktop Nav */}
-            <div className="hidden md:block">
-              <div className="ml-10 flex items-baseline space-x-1">
-                {navLinks.map((link) => (
-                  <button
-                    key={link.path}
-                    onClick={() => navigate(link.path)}
-                    className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-300 relative overflow-hidden group ${
-                      isActive(link.path)
-                        ? 'text-teal-400 bg-slate-900/50 border border-teal-500/30'
-                        : 'text-slate-400 hover:text-white hover:bg-slate-800/50'
-                    }`}
-                  >
-                    <span className="relative z-10">{link.label}</span>
-                    {isActive(link.path) && (
-                      <span className="absolute bottom-0 left-0 w-full h-0.5 bg-gradient-to-r from-teal-500 to-blue-500" />
-                    )}
-                  </button>
-                ))}
-              </div>
-            </div>
+          <button
+            type="button"
+            className="mobile-menu-toggle"
+            aria-label={isMenuOpen ? 'Close navigation menu' : 'Open navigation menu'}
+            aria-expanded={isMenuOpen}
+            aria-controls="primary-navigation"
+            onClick={() => setIsMenuOpen((open) => !open)}
+          >
+            {isMenuOpen ? <X size={21} /> : <Menu size={21} />}
+          </button>
 
-            {/* Mobile Menu Button */}
-            <div className="md:hidden">
-              <button
-                onClick={() => setIsMenuOpen(!isMenuOpen)}
-                className="text-slate-300 hover:text-white p-2"
-              >
-                {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
-              </button>
-            </div>
-          </div>
-        </div>
-
-        {/* Mobile Nav */}
-        {isMenuOpen && (
-          <div className="md:hidden bg-slate-900 border-b border-slate-800 animate-fade-in-down">
-            <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
+          <nav id="primary-navigation" className={`primary-navigation${isMenuOpen ? ' is-open' : ''}`} aria-label="Main navigation">
+            <div className="nav-links">
               {navLinks.map((link) => (
-                <button
+                <NavLink
                   key={link.path}
-                  onClick={() => {
-                    navigate(link.path);
-                    setIsMenuOpen(false);
-                  }}
-                  className="block w-full text-left px-3 py-2 rounded-md text-base font-medium text-slate-300 hover:text-white hover:bg-slate-800"
+                  to={link.path}
+                  end={link.path === '/'}
+                  onClick={() => setIsMenuOpen(false)}
+                  className={({ isActive }) => `nav-link${isActive ? ' is-active' : ''}`}
                 >
                   {link.label}
-                </button>
+                </NavLink>
               ))}
             </div>
-          </div>
-        )}
-      </nav>
+            <NavLink to="/contact" onClick={() => setIsMenuOpen(false)} className="nav-contact">
+              Let’s talk <ArrowUpRight size={15} />
+            </NavLink>
+          </nav>
+        </div>
+      </header>
 
-      {/* Main Content */}
-      <main className="relative z-10">
-        {children}
-      </main>
+      <main id="main-content">{children}</main>
 
-      {/* Footer */}
-      <footer className="bg-slate-950 py-12 border-t border-slate-900 relative z-10">
-        <div className="max-w-7xl mx-auto px-4 text-center">
-          <div className="flex justify-center items-center gap-2 mb-4 text-2xl font-bold text-slate-200">
-             MD.RI <span className="text-teal-500">_</span>
-          </div>
-          <p className="text-slate-500 mb-6">
-            © {new Date().getFullYear()} MD Rokibul Islam. Built with React & Tailwind.
-          </p>
-          <div className="flex justify-center gap-6 text-sm text-slate-600 font-mono">
-            <span className="hover:text-teal-400 transition-colors cursor-default">Coding</span>
-            <span className="w-1 h-1 rounded-full bg-slate-700 my-auto"></span>
-            <span className="hover:text-green-400 transition-colors cursor-default">Cricket</span>
-            <span className="w-1 h-1 rounded-full bg-slate-700 my-auto"></span>
-            <span className="hover:text-amber-500 transition-colors cursor-default">Tea</span>
-            <span className="w-1 h-1 rounded-full bg-slate-700 my-auto"></span>
-            <span className="hover:text-blue-400 transition-colors cursor-default">Travel</span>
-          </div>
+      <footer className="site-footer">
+        <div className="site-container footer-inner">
+          <Link to="/" className="footer-brand">RI<span>.</span></Link>
+          <p>Designed and built with care by MD Rokibul Islam.</p>
+          <a href="https://github.com/webdoc-rokib/" target="_blank" rel="noopener noreferrer">
+            GitHub <ArrowUpRight size={14} />
+          </a>
+          <span className="footer-year">© {new Date().getFullYear()}</span>
         </div>
       </footer>
+      <FloatingCursor />
     </div>
   );
 };

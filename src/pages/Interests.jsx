@@ -1,118 +1,99 @@
-import React, { useState } from 'react';
-import { Cpu, Shield, TrendingUp, AlertCircle, BookMarked } from 'lucide-react';
+import { createElement, useState } from 'react';
+import { ArrowDownRight, ArrowUpRight, Cpu, FlaskConical, Github, Shield, Sparkles, Users } from 'lucide-react';
 
-const Interests = ({ visibleSections }) => {
-  const [expandedCard, setExpandedCard] = useState(null);
+const focusAreas = [
+  {
+    id: 'security',
+    number: '01',
+    label: 'Career direction',
+    title: 'Cybersecurity',
+    description: 'I’m interested in how systems fail, how to assess risk responsibly, and how security can be part of a better product from day one.',
+    icon: Shield,
+    topics: ['Network security fundamentals', 'Ethical security testing', 'Secure system design', 'Threat analysis'],
+  },
+  {
+    id: 'ai',
+    number: '02',
+    label: 'Curiosity in progress',
+    title: 'AI & machine learning',
+    description: 'I’m exploring how machine learning can solve useful problems—and where it can complement security and software engineering.',
+    icon: Cpu,
+    topics: ['Machine learning foundations', 'Neural networks', 'Practical AI applications', 'AI in security'],
+  },
+];
+
+const waysToGrow = [
+  { title: 'Hands-on practice', description: 'Learn by building, testing ideas, and working through practical challenges.', icon: FlaskConical },
+  { title: 'Open source', description: 'Study how other developers approach problems and contribute where I can.', icon: Github },
+  { title: 'Community', description: 'Share ideas, learn with others, and stay open to different perspectives.', icon: Users },
+];
+
+const Interests = () => {
+  const [expandedArea, setExpandedArea] = useState(null);
 
   return (
-    <section id="interests" className="py-24 bg-slate-800/30">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <h2 className="text-3xl md:text-4xl font-bold mb-12 flex items-center gap-3 transition-all duration-1000 transform translate-x-0 opacity-100">
-          <Cpu className="text-blue-400" /> Areas of Focus
-        </h2>
-        
-        <div className="grid md:grid-cols-2 gap-8">
-          {/* Cyber Security Card */}
-          <div 
-            className="group relative overflow-hidden rounded-3xl bg-slate-900 border border-slate-700 p-10 hover:border-teal-500/50 transition-all duration-500 hover:shadow-[0_0_40px_rgba(20,184,166,0.1)] translate-y-0 opacity-100 cursor-pointer"
-            onClick={() => setExpandedCard(expandedCard === 'security' ? null : 'security')}
-          >
-            <div className="absolute top-0 right-0 p-8 opacity-5 group-hover:opacity-10 transition-opacity transform group-hover:rotate-12 duration-700">
-              <Shield size={180} />
-            </div>
-            <div className="relative z-10">
-              <div className="w-14 h-14 rounded-xl bg-teal-500/10 flex items-center justify-center mb-6 border border-teal-500/20 group-hover:scale-110 transition-transform">
-                <Shield className="text-teal-400" size={28} />
-              </div>
-              <h3 className="text-2xl font-bold text-white mb-4 flex items-center gap-2">
-                Cyber Security <AlertCircle size={20} className="text-teal-400" />
-              </h3>
-              <p className="text-slate-400 leading-relaxed mb-6 text-lg">
-                My primary career aspiration. Actively learning network security, ethical hacking, vulnerability assessment, and secure architecture design.
-              </p>
-              
-              {expandedCard === 'security' && (
-                <div className="space-y-3 mb-6 animate-in">
-                  <div className="text-sm text-slate-300">
-                    <strong>Currently Exploring:</strong>
-                    <ul className="list-disc list-inside mt-2 space-y-1 text-slate-400">
-                      <li>Advanced Penetration Testing (CEH)</li>
-                      <li>Zero-trust architecture models</li>
-                      <li>Threat intelligence and analysis</li>
-                      <li>Cloud security (AWS/Azure)</li>
-                    </ul>
-                  </div>
-                </div>
-              )}
-              
-              <div className="inline-flex items-center gap-2 text-teal-400 font-bold tracking-wide text-sm uppercase">
-                <span className="w-2 h-2 rounded-full bg-teal-400 animate-pulse"></span> Career Goal
-              </div>
-            </div>
-          </div>
+    <section id="interests" className="page-section focus-page">
+      <div className="site-container">
+        <header className="page-heading">
+          <p className="section-kicker">Beyond the day-to-day</p>
+          <h1>Questions worth exploring.</h1>
+          <p className="section-intro">
+            My interests connect software, security, and emerging technology. I’m early in the journey,
+            staying curious, and building a stronger foundation one project at a time.
+          </p>
+        </header>
 
-          {/* AI Card */}
-          <div 
-            className="group relative overflow-hidden rounded-3xl bg-slate-900 border border-slate-700 p-10 hover:border-blue-500/50 transition-all duration-500 hover:shadow-[0_0_40px_rgba(59,130,246,0.1)] translate-y-0 opacity-100 cursor-pointer"
-            onClick={() => setExpandedCard(expandedCard === 'ai' ? null : 'ai')}
-            style={{ transitionDelay: '200ms' }}
-          >
-            <div className="absolute top-0 right-0 p-8 opacity-5 group-hover:opacity-10 transition-opacity transform group-hover:-rotate-12 duration-700">
-              <Cpu size={180} />
-            </div>
-            <div className="relative z-10">
-              <div className="w-14 h-14 rounded-xl bg-blue-500/10 flex items-center justify-center mb-6 border border-blue-500/20 group-hover:scale-110 transition-transform">
-                <Cpu className="text-blue-400" size={28} />
-              </div>
-              <h3 className="text-2xl font-bold text-white mb-4 flex items-center gap-2">
-                Artificial Intelligence <TrendingUp size={20} className="text-blue-400" />
-              </h3>
-              <p className="text-slate-400 leading-relaxed mb-6 text-lg">
-                Fascinated by AI potential. Exploring machine learning, deep learning, and how AI integrates with security to predict and prevent threats.
-              </p>
-              
-              {expandedCard === 'ai' && (
-                <div className="space-y-3 mb-6 animate-in">
-                  <div className="text-sm text-slate-300">
-                    <strong>Tech Stack & Learning:</strong>
-                    <ul className="list-disc list-inside mt-2 space-y-1 text-slate-400">
-                      <li>TensorFlow & PyTorch frameworks</li>
-                      <li>Computer vision and NLP projects</li>
-                      <li>AI-driven security (anomaly detection)</li>
-                      <li>MLOps and deployment strategies</li>
-                    </ul>
-                  </div>
+        <div className="focus-grid">
+          {focusAreas.map(({ id, number, label, title, description, icon, topics }) => {
+            const expanded = expandedArea === id;
+            return (
+              <article className={`focus-card focus-card-${id}`} key={id}>
+                <div className="focus-card-header">
+                  <span className="focus-number">{number}</span>
+                  <span className="focus-icon">{createElement(icon, { size: 22 })}</span>
                 </div>
-              )}
-              
-              <div className="inline-flex items-center gap-2 text-blue-400 font-bold tracking-wide text-sm uppercase">
-                <span className="w-2 h-2 rounded-full bg-blue-400 animate-pulse"></span> Current Passion
-              </div>
-            </div>
-          </div>
+                <p className="focus-label">{label}</p>
+                <h2>{title}</h2>
+                <p className="focus-description">{description}</p>
+                <button
+                  type="button"
+                  className="focus-toggle"
+                  aria-expanded={expanded}
+                  aria-controls={`${id}-topics`}
+                  onClick={() => setExpandedArea(expanded ? null : id)}
+                >
+                  {expanded ? 'Close topics' : 'Topics I’m exploring'}
+                  {expanded ? <ArrowDownRight size={16} /> : <ArrowUpRight size={16} />}
+                </button>
+                {expanded && (
+                  <ul className="focus-topics" id={`${id}-topics`}>
+                    {topics.map((topic) => <li key={topic}>{topic}</li>)}
+                  </ul>
+                )}
+              </article>
+            );
+          })}
         </div>
 
-        {/* Learning Resources */}
-        <div className="mt-16 grid md:grid-cols-3 gap-6">
-          <div className="bg-slate-900/50 border border-slate-700 rounded-2xl p-6 hover:border-teal-500/50 transition-all hover:shadow-lg">
-            <div className="text-3xl mb-4">📚</div>
-            <h4 className="font-bold text-white mb-2">Certifications</h4>
-            <p className="text-sm text-slate-400 mb-3">Currently pursuing industry-recognized security and AI certifications</p>
-            <p className="text-xs text-teal-400 font-semibold">TryHackMe Hall of Fame • Learning Daily</p>
+        <section className="growth-section" aria-labelledby="growth-heading">
+          <div className="growth-heading">
+            <span className="growth-heading-icon"><Sparkles size={19} /></span>
+            <div>
+              <p className="section-kicker">How I keep growing</p>
+              <h2 id="growth-heading">Stay curious. Keep building.</h2>
+            </div>
           </div>
-          <div className="bg-slate-900/50 border border-slate-700 rounded-2xl p-6 hover:border-blue-500/50 transition-all hover:shadow-lg">
-            <div className="text-3xl mb-4">🔬</div>
-            <h4 className="font-bold text-white mb-2">Research</h4>
-            <p className="text-sm text-slate-400 mb-3">Following emerging security trends and publishing insights on cyber threats</p>
-            <p className="text-xs text-blue-400 font-semibold">Medium • GitHub • Blog</p>
+          <div className="growth-grid">
+            {waysToGrow.map(({ title, description, icon }, index) => (
+              <article className="growth-card" key={title}>
+                <span className="growth-index">0{index + 1}</span>
+                {createElement(icon, { size: 20 })}
+                <h3>{title}</h3>
+                <p>{description}</p>
+              </article>
+            ))}
           </div>
-          <div className="bg-slate-900/50 border border-slate-700 rounded-2xl p-6 hover:border-purple-500/50 transition-all hover:shadow-lg">
-            <div className="text-3xl mb-4">🤝</div>
-            <h4 className="font-bold text-white mb-2">Community</h4>
-            <p className="text-sm text-slate-400 mb-3">Contributing to open source projects and mentoring junior developers</p>
-            <p className="text-xs text-purple-400 font-semibold">Open Source • CTF Competitions</p>
-          </div>
-        </div>
+        </section>
       </div>
     </section>
   );
